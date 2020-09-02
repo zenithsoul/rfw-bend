@@ -4,7 +4,7 @@ import (
 	"context"
 
 	ArangoDriver "github.com/arangodb/go-driver"
-	"github.com/arangodb/go-driver/http"
+	ArangoHttp "github.com/arangodb/go-driver/http"
 )
 
 const (
@@ -18,6 +18,72 @@ const (
 	DBselect string = "firewall"
 )
 
+// SettingDB - Set config
+type SettingDB struct {
+	dbConn   ArangoDriver.Connection
+	dbClient ArangoDriver.ClientUsers
+	dbSelect ArangoDriver.Database
+	dbStatus string
+}
+
+// CursorQuery - Set config Curcor
+type CursorQuery struct {
+	dbCursor    ArangoDriver.Cursor
+	QueryStatus string
+}
+
+// ArangoDBConnect - Open connect to the database
+func ArangoDBConnect() *SettingDB {
+
+	connDB, connErr := ArangoHttp.NewConnection(ArangoHttp.ConnectionConfig{
+		Endpoints: []string{DBurl}},
+	)
+
+	if connErr != nil {
+		// Handle error
+	}
+
+	clientDB, clientErr := ArangoDriver.NewClient(ArangoDriver.ClientConfig{
+		Connection:     connDB,
+		Authentication: ArangoDriver.BasicAuthentication(DBuser, DBpass),
+	})
+
+	if clientErr != nil {
+		// Handle error
+	}
+
+	selectDB, errSelect := clientDB.Database(nil, DBselect)
+
+	if errSelect != nil {
+		// Handle error
+	}
+
+	return &SettingDB{
+		dbConn:   connDB,
+		dbClient: clientDB,
+		dbSelect: selectDB,
+		dbStatus: "OK",
+	}
+}
+
+//NewQuery - Query Database
+func (db *SettingDB) NewQuery(query string) *CursorQuery {
+
+	ctx := ArangoDriver.WithQueryCount(context.Background())
+	dbQuery, errQuery := db.dbSelect.Query(ctx, query, nil)
+
+	if errQuery != nil {
+
+	}
+
+	return &CursorQuery{
+		dbCursor:    dbQuery,
+		QueryStatus: "OK",
+	}
+}
+
+/*
+
 type ServiceClientDB struct {
 	dbClient ArangoDriver.ClientUsers
 	dbStatus string
@@ -27,6 +93,7 @@ type QueryClientDB struct {
 	dbQuery  ArangoDriver.Cursor
 	dbStatus string
 }
+
 
 func NewService(dbc ArangoDriver.Client) *ServiceClientDB {
 
@@ -53,57 +120,5 @@ func NewQuery(dbq ArangoDriver.Database, query string) *QueryClientDB {
 		dbStatus: statusQuery,
 	}
 
-}
-
-// ArangoDBConnect - Open connect to the database
-func ArangoDBConnect() (ArangoDriver.Client, error) {
-
-	conndb, connerr := http.NewConnection(http.ConnectionConfig{
-		Endpoints: []string{DBurl}},
-	)
-
-	if connerr != nil {
-		// Handle error
-	}
-
-	clientdb, clienterr := ArangoDriver.NewClient(ArangoDriver.ClientConfig{
-		Connection:     conndb,
-		Authentication: ArangoDriver.BasicAuthentication(DBuser, DBpass),
-	})
-
-	if clienterr != nil {
-		// Handle error
-	}
-
-	return clientdb, nil
-}
-
-//DBconnect - database that we connected
-/*
-func DBconnect() {
-
-	ctx := ArangoDriver.WithQueryCount(context.Background())
-
-	conndb, connerr := http.NewConnection(http.ConnectionConfig{
-		Endpoints: []string{DBurl}},
-	)
-
-	if connerr != nil {
-		// Handle error
-	}
-
-	clientdb, clienterr := ArangoDriver.NewClient(ArangoDriver.ClientConfig{
-		Connection:     conndb,
-		Authentication: ArangoDriver.BasicAuthentication(DBuser, DBpass),
-	})
-
-	if clienterr != nil {
-		// Handle error
-
-	}
-
-	db, dberr := clientdb.Database(nil, DBselect)
-
-	return db
 }
 */
