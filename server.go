@@ -34,8 +34,7 @@ func main() {
 	//r := new(big.Int)
 	//fmt.Println(r.Binomial(1000, 10))
 
-	ctxx := context.Background()
-	ctx := driver.WithQueryCount(ctxx)
+	ctx := driver.WithQueryCount(context.Background())
 
 	conn, err := http.NewConnection(http.ConnectionConfig{
 		Endpoints: []string{"http://localhost:8529"},

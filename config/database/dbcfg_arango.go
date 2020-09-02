@@ -2,65 +2,95 @@ package database
 
 import (
 	"context"
-	"log"
-	"strconv"
-	"time"
 
-	driver "github.com/arangodb/go-driver"
+	ArangoDriver "github.com/arangodb/go-driver"
 	"github.com/arangodb/go-driver/http"
 )
 
-// ArgoGetInfoDB - Get Test
-func ArgoGetInfoDB() string {
+const (
+	// DBurl -
+	DBurl string = "http://localhost:8529"
+	// DBuser -
+	DBuser string = "root"
+	// DBpass -
+	DBpass string = "1234"
+	// DBselect -
+	DBselect string = "firewall"
+)
 
-	start := time.Now()
-
-	//r := new(big.Int)
-	//fmt.Println(r.Binomial(1000, 10))
-
-	ctxx := context.Background()
-	ctx := driver.WithQueryCount(ctxx)
-
-	conn, err := http.NewConnection(http.ConnectionConfig{
-		Endpoints: []string{"http://localhost:8529"},
-	})
-
-	if err != nil {
-		// Handle error
-		return "Connection TCP Error"
-	}
-
-	c, err := driver.NewClient(driver.ClientConfig{
-		Connection:     conn,
-		Authentication: driver.BasicAuthentication("root", "1234"),
-	})
-
-	if err != nil {
-		// Handle error
-		return "Connection Driver Error"
-	}
-
-	db, err := c.Database(nil, "firewall")
-
-	if err != nil {
-		// Handle error
-		return "Connection DB Error"
-	}
-
-	query := "FOR d IN test RETURN d"
-	cursor, err := db.Query(ctx, query, nil)
-
-	defer cursor.Close()
-
-	if err != nil {
-		// handle error
-	}
-
-	scorunt := cursor.Count()
-	strtxt := strconv.FormatInt(scorunt, 10)
-
-	elapsed := time.Since(start)
-	log.Printf("Binomial took %s", elapsed)
-
-	return strtxt
+type ServiceClientDB struct {
+	dbClient ArangoDriver.ClientUsers
 }
+
+type QueryClientDB struct {
+	dbQuery ArangoDriver.Cursor
+}
+
+func NewService(dbc ArangoDriver.Client) *ServiceClientDB {
+
+	dbc.Database(nil, DBselect)
+
+	return &ServiceClientDB{
+		dbClient: dbc,
+	}
+}
+
+func NewQuery(dbq ArangoDriver.Database, query string) *QueryClientDB {
+
+	ctx := ArangoDriver.WithQueryCount(context.Background())
+	dbq.Query(ctx, query, nil)
+
+}
+
+// ArangoDBConnect - Open connect to the database
+func ArangoDBConnect() (ArangoDriver.Client, error) {
+
+	conndb, connerr := http.NewConnection(http.ConnectionConfig{
+		Endpoints: []string{DBurl}},
+	)
+
+	if connerr != nil {
+		// Handle error
+	}
+
+	clientdb, clienterr := ArangoDriver.NewClient(ArangoDriver.ClientConfig{
+		Connection:     conndb,
+		Authentication: ArangoDriver.BasicAuthentication(DBuser, DBpass),
+	})
+
+	if clienterr != nil {
+		// Handle error
+	}
+
+	return clientdb, nil
+}
+
+//DBconnect - database that we connected
+/*
+func DBconnect() {
+
+	ctx := ArangoDriver.WithQueryCount(context.Background())
+
+	conndb, connerr := http.NewConnection(http.ConnectionConfig{
+		Endpoints: []string{DBurl}},
+	)
+
+	if connerr != nil {
+		// Handle error
+	}
+
+	clientdb, clienterr := ArangoDriver.NewClient(ArangoDriver.ClientConfig{
+		Connection:     conndb,
+		Authentication: ArangoDriver.BasicAuthentication(DBuser, DBpass),
+	})
+
+	if clienterr != nil {
+		// Handle error
+
+	}
+
+	db, dberr := clientdb.Database(nil, DBselect)
+
+	return db
+}
+*/
