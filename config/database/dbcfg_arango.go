@@ -20,10 +20,12 @@ const (
 
 type ServiceClientDB struct {
 	dbClient ArangoDriver.ClientUsers
+	dbStatus string
 }
 
 type QueryClientDB struct {
-	dbQuery ArangoDriver.Cursor
+	dbQuery  ArangoDriver.Cursor
+	dbStatus string
 }
 
 func NewService(dbc ArangoDriver.Client) *ServiceClientDB {
@@ -32,13 +34,24 @@ func NewService(dbc ArangoDriver.Client) *ServiceClientDB {
 
 	return &ServiceClientDB{
 		dbClient: dbc,
+		dbStatus: "OK",
 	}
 }
 
 func NewQuery(dbq ArangoDriver.Database, query string) *QueryClientDB {
 
+	var statusQuery string = "QUERY-OK"
 	ctx := ArangoDriver.WithQueryCount(context.Background())
-	dbq.Query(ctx, query, nil)
+	dbcursor, errcursor := dbq.Query(ctx, query, nil)
+
+	if errcursor != nil {
+		statusQuery = "QUERY-ERROR"
+	}
+
+	return &QueryClientDB{
+		dbQuery:  dbcursor,
+		dbStatus: statusQuery,
+	}
 
 }
 
