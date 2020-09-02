@@ -10,12 +10,6 @@ import (
 	"github.com/arangodb/go-driver/http"
 )
 
-type server struct {
-	db *sql.DB,
-	
-}
-
-
 // ArgoGetInfoDB - Get Test
 func ArgoGetInfoDB() string {
 
@@ -46,7 +40,7 @@ func ArgoGetInfoDB() string {
 		return "Connection Driver Error"
 	}
 
-	db, err := c.Database(context.Background(), "firewall")
+	db, err := c.Database(nil, "firewall")
 
 	if err != nil {
 		// Handle error
