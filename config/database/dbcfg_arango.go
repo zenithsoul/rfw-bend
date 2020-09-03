@@ -24,16 +24,14 @@ type SettingDB struct {
 	dbClient ArangoDriver.ClientUsers
 	dbSelect ArangoDriver.Database
 	dbStatus string
-}
-
-// CursorQuery - Set config Curcor
-type CursorQuery struct {
-	dbCursor    ArangoDriver.Cursor
-	QueryStatus string
+	dbError  uint8
 }
 
 // ArangoDBConnect - Open connect to the database
 func ArangoDBConnect() *SettingDB {
+
+	var dbStatus string = "Success"
+	var dbError uint8 = 0
 
 	connDB, connErr := ArangoHttp.NewConnection(ArangoHttp.ConnectionConfig{
 		Endpoints: []string{DBurl}},
@@ -41,6 +39,8 @@ func ArangoDBConnect() *SettingDB {
 
 	if connErr != nil {
 		// Handle error
+		dbStatus = "Error: TCP Connect"
+		dbError = 1
 	}
 
 	clientDB, clientErr := ArangoDriver.NewClient(ArangoDriver.ClientConfig{
@@ -50,75 +50,37 @@ func ArangoDBConnect() *SettingDB {
 
 	if clientErr != nil {
 		// Handle error
+		dbStatus = "Error: Client Connection"
+		dbError = 2
 	}
 
-	selectDB, errSelect := clientDB.Database(nil, DBselect)
+	selectDB, selectErr := clientDB.Database(nil, DBselect)
 
-	if errSelect != nil {
+	if selectErr != nil {
 		// Handle error
+		dbStatus = "Error: Database Connection"
+		dbError = 3
 	}
 
 	return &SettingDB{
 		dbConn:   connDB,
 		dbClient: clientDB,
 		dbSelect: selectDB,
-		dbStatus: "OK",
+		dbStatus: dbStatus,
+		dbError:  dbError,
 	}
 }
 
 //NewQuery - Query Database
-func (db *SettingDB) NewQuery(query string) *CursorQuery {
+func (db *SettingDB) NewQuery(query string) (ArangoDriver.Cursor, string, uint8) {
 
 	ctx := ArangoDriver.WithQueryCount(context.Background())
 	dbQuery, errQuery := db.dbSelect.Query(ctx, query, nil)
 
 	if errQuery != nil {
-
+		db.dbStatus = "Error: Query"
+		db.dbError = 4
 	}
 
-	return &CursorQuery{
-		dbCursor:    dbQuery,
-		QueryStatus: "OK",
-	}
+	return dbQuery, db.dbStatus, db.dbError
 }
-
-/*
-
-type ServiceClientDB struct {
-	dbClient ArangoDriver.ClientUsers
-	dbStatus string
-}
-
-type QueryClientDB struct {
-	dbQuery  ArangoDriver.Cursor
-	dbStatus string
-}
-
-
-func NewService(dbc ArangoDriver.Client) *ServiceClientDB {
-
-	dbc.Database(nil, DBselect)
-
-	return &ServiceClientDB{
-		dbClient: dbc,
-		dbStatus: "OK",
-	}
-}
-
-func NewQuery(dbq ArangoDriver.Database, query string) *QueryClientDB {
-
-	var statusQuery string = "QUERY-OK"
-	ctx := ArangoDriver.WithQueryCount(context.Background())
-	dbcursor, errcursor := dbq.Query(ctx, query, nil)
-
-	if errcursor != nil {
-		statusQuery = "QUERY-ERROR"
-	}
-
-	return &QueryClientDB{
-		dbQuery:  dbcursor,
-		dbStatus: statusQuery,
-	}
-
-}
-*/

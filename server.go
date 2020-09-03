@@ -1,78 +1,116 @@
 package main
 
-import (
-	"context"
-	"log"
-	"strconv"
-	"time"
-
-	driver "github.com/arangodb/go-driver"
-	"github.com/arangodb/go-driver/http"
-)
-
 // "net/http"
 
 // "github.com/labstack/echo"
 
+import (
+	"context"
+	"fmt"
+	"log"
+	"strconv"
+	"time"
+
+	dbConn "rfw-bend/config/database"
+
+	"github.com/arangodb/go-driver"
+)
+
+// MyDocument -
+type MyDocument struct {
+	ID         string `json:"_id"`
+	Key        string `json:"_key"`
+	Rev        string `json:"_rev"`
+	ValuePrice int64  `json:"value"`
+}
+
 func main() {
-
-	//
-
-	/*
-		e := echo.New()
-		e.GET("/", func(c echo.Context) error {
-
-			return c.String(http.StatusOK, "Hello, World!")
-		})
-		e.Logger.Fatal(e.Start(":8080"))
-	*/
-
-	// fmt.Println(testdb.ArgoGetInfoDB())
 
 	start := time.Now()
 
-	//r := new(big.Int)
-	//fmt.Println(r.Binomial(1000, 10))
+	conn := dbConn.ArangoDBConnect()
+	getCursor, _, _ := conn.NewQuery("FOR d IN test RETURN d")
+	defer getCursor.Close()
+	getCount := getCursor.Count()
 
-	ctx := driver.WithQueryCount(context.Background())
+	strtxt := strconv.FormatInt(getCount, 10)
+	fmt.Println("total = ", strtxt)
 
-	conn, err := http.NewConnection(http.ConnectionConfig{
-		Endpoints: []string{"http://localhost:8529"},
-	})
+	result := []MyDocument{}
 
-	if err != nil {
-		// Handle error
+	for {
+		product := MyDocument{}
+		_, err := getCursor.ReadDocument(context.Background(), &product)
+		if driver.IsNoMoreDocuments(err) {
+			break
+		} else if err != nil {
+			// handle other errors
+		}
 
+		result = append(result, product)
 	}
 
-	c, err := driver.NewClient(driver.ClientConfig{
-		Connection:     conn,
-		Authentication: driver.BasicAuthentication("root", "1234"),
-	})
-
-	if err != nil {
-		// Handle error
-
-	}
-
-	db, err := c.Database(nil, "firewall")
-
-	if err != nil {
-		// Handle error
-	}
-
-	query := "FOR d IN test RETURN d"
-	cursor, err := db.Query(ctx, query, nil)
-
-	defer cursor.Close()
-
-	if err != nil {
-		// handle error
-	}
-
-	scorunt := cursor.Count()
-	strtxt := strconv.FormatInt(scorunt, 10)
-
+	println(result[99].ValuePrice)
 	elapsed := time.Since(start)
-	log.Printf("Binomial took %s : total %s", elapsed, strtxt)
+	log.Printf("Binomial took %s", elapsed)
+	println(len(result))
+
+	/*
+			e := echo.New()
+			e.GET("/", func(c echo.Context) error {
+
+				return c.String(http.StatusOK, "Hello, World!")
+			})
+			e.Logger.Fatal(e.Start(":8080"))
+
+
+		// fmt.Println(testdb.ArgoGetInfoDB())
+
+		start := time.Now()
+
+		//r := new(big.Int)
+		//fmt.Println(r.Binomial(1000, 10))
+
+		ctx := driver.WithQueryCount(context.Background())
+
+		conn, err := http.NewConnection(http.ConnectionConfig{
+			Endpoints: []string{"http://localhost:8529"},
+		})
+
+		if err != nil {
+			// Handle error
+
+		}
+
+		c, err := driver.NewClient(driver.ClientConfig{
+			Connection:     conn,
+			Authentication: driver.BasicAuthentication("root", "1234"),
+		})
+
+		if err != nil {
+			// Handle error
+
+		}
+
+		db, err := c.Database(nil, "firewall")
+
+		if err != nil {
+			// Handle error
+		}
+
+		query := "FOR d IN test RETURN d"
+		cursor, err := db.Query(ctx, query, nil)
+
+		defer cursor.Close()
+
+		if err != nil {
+			// handle error
+		}
+
+		scorunt := cursor.Count()
+		strtxt := strconv.FormatInt(scorunt, 10)
+
+		elapsed := time.Since(start)
+		log.Printf("Binomial took %s : total %s", elapsed, strtxt)
+	*/
 }
