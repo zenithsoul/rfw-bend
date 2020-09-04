@@ -59,8 +59,10 @@ func GetTopic() string {
 	result := []Topic{}
 
 	for {
+
 		getData := Topic{}
 		_, err := getCursor.ReadDocument(context.Background(), &getData)
+
 		if driver.IsNoMoreDocuments(err) {
 			break
 		} else if err != nil {
