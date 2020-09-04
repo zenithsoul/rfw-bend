@@ -1,9 +1,5 @@
 package main
 
-import (
-	"rfw-bend/model"
-)
-
 // "net/http"
 
 // "github.com/labstack/echo"
@@ -18,10 +14,16 @@ type MyDocument struct {
 }
 */
 
+import (
+	"log"
+	connectDB "rfw-bend/model"
+)
+
 func main() {
 
-	model.getTopic()
+	data := connectDB.GetTopic()
 
+	log.Println(data)
 	/*
 		start := time.Now()
 		conn := dbConn.ArangoDBConnect()

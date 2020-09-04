@@ -11,14 +11,14 @@ import (
 
 // Topic -
 type Topic struct {
-	TopicContent string `json:"topic"`
-	Replys       []Reply
+	TopicContent string  `json:"topic"`
+	Replys       []Reply `json:"replys"`
 }
 
 // Reply -
 type Reply struct {
-	ReplyContent string `json:"reply"`
-	Subreplys    []Subreply
+	ReplyContent string     `json:"reply"`
+	Subreplys    []Subreply `json:"subreplys"`
 }
 
 // Subreply -
@@ -26,7 +26,8 @@ type Subreply struct {
 	SubreplyContent string `json:"subreply"`
 }
 
-func getTopic() string {
+// GetTopic -
+func GetTopic() string {
 
 	conn := dbConn.ArangoDBConnect()
 	getCursor, _, _ := conn.NewQuery(`
