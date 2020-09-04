@@ -10,26 +10,34 @@ import (
 )
 
 // Topic -
-type Topic struct {
-	TopicContent string  `json:"topic"`
-	Replys       []Reply `json:"replys"`
-}
+type (
+	Topic struct {
+		TopicContent string  `json:"topic"`
+		Replys       []Reply `json:"replys"`
+	}
+)
 
 // Reply -
-type Reply struct {
-	ReplyContent string     `json:"reply"`
-	Subreplys    []Subreply `json:"subreplys"`
-}
+type (
+	Reply struct {
+		ReplyContent string     `json:"reply"`
+		Subreplys    []Subreply `json:"subreplys"`
+	}
+)
 
 // Subreply -
-type Subreply struct {
-	SubreplyContent string `json:"subreply"`
-}
+type (
+	Subreply struct {
+		SubreplyContent string `json:"subreply"`
+	}
+)
 
 // GetTopic -
 func GetTopic() string {
 
 	conn := dbConn.ArangoDBConnect()
+	defer dbConn.ArangoDBConnect()
+
 	getCursor, _, _ := conn.NewQuery(`
 		FOR d IN d_content
 
@@ -53,9 +61,6 @@ func GetTopic() string {
 		
 		RETURN { topic : d.content , replys : d_reply}
 	`)
-
-	defer getCursor.Close()
-
 	result := []Topic{}
 
 	for {
@@ -73,6 +78,8 @@ func GetTopic() string {
 	}
 
 	jsonResult, _ := json.Marshal(result)
+
+	defer getCursor.Close()
 
 	return string(jsonResult)
 }

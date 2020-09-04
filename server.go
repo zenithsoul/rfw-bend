@@ -22,8 +22,8 @@ import (
 func main() {
 
 	data := connectDB.GetTopic()
-
 	log.Println(data)
+
 	/*
 		start := time.Now()
 		conn := dbConn.ArangoDBConnect()

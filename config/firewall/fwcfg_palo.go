@@ -2,7 +2,7 @@ package config
 
 // GetPaloIP - Return Firewall IP Management
 func GetPaloIP() string {
-	return "192.168.94.130"
+	return "192.168.10.187"
 }
 
 // GetPaloLocation - Return Firewall location
