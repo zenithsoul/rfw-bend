@@ -9,7 +9,7 @@ import (
 
 const (
 	// DBurl -
-	DBurl string = "http://localhost:8529"
+	DBurl string = "http://192.168.10.188:8529"
 	// DBuser -
 	DBuser string = "root"
 	// DBpass -
