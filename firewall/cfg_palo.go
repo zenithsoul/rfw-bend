@@ -1,33 +1,25 @@
 package firewall
 
-import (
-	"crypto/tls"
-	"fmt"
-	"net/http"
-)
-
 // SetttingCofnig -
-type (
-	SetttingCofnig struct {
-		IP      string
-		Loc     string
-		Vsys    string
-		Key     string
-		Version string
-	}
-)
+type SetttingCofnig struct {
+	IP      string
+	Loc     string
+	Vsys    string
+	Key     string
+	Version string
+}
 
 const (
 	// PaloIPmgm - IP Management
-	PaloIPmgm = "192.168.10.187"
+	PaloIPmgm string = "192.168.10.187"
 	// PaloLocation -
-	PaloLocation = "vsys"
+	PaloLocation string = "vsys"
 	// PaloVsys -
-	PaloVsys = "vsys1"
+	PaloVsys string = "vsys1"
 	// PaloKey -
-	PaloKey = "LUFRPT1tdExDSzhTQkdLUmFWUFFiTTBpbnVEeUhFdTQ9QlB4Ny9YZmJLUFZSRVZRazg1MVI2Z1RBTVMzU2hWWnFQL0hrVndwaThlQWZ4c21pS2VvMXZSRjh3Mm9OQ1NvOQ=="
+	PaloKey string = "LUFRPT1tdExDSzhTQkdLUmFWUFFiTTBpbnVEeUhFdTQ9QlB4Ny9YZmJLUFZSRVZRazg1MVI2Z1RBTVMzU2hWWnFQL0hrVndwaThlQWZ4c21pS2VvMXZSRjh3Mm9OQ1NvOQ=="
 	// PaloVersion -
-	PaloVersion = "9.1"
+	PaloVersion string = "9.1"
 )
 
 // InitPalo - init config
@@ -44,24 +36,31 @@ func InitPalo() *SetttingCofnig {
 }
 
 // GetZonePalo - Get zone security from Palo Alto
-func (s *SetttingCofnig) GetZonePalo() string {
+func (s *SetttingCofnig) GetZonePalo() (string, error) {
 
-	var PathURL string = `https://` + s.IP + `/restapi/` + s.Version + `/Network/Zones?location=` + s.Loc + `&vsys=` + s.Vsys
+	return `1`, nil
+}
+
+/*
+func GetZonePalo() string {
+
+	var PathURL string = `https://` + PaloIPmgm + `/restapi/` + PaloVersion + `/Network/Zones?location=` + PaloLocation + `&vsys=` + PaloVsys
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 
 	client := &http.Client{}
 	req, errReq := http.NewRequest("GET", PathURL, nil)
-	req.Header.Set("X-PAN-KEY", s.Key)
+	req.Header.Set("X-PAN-KEY", PaloKey)
 
 	if errReq != nil {
 		fmt.Println(errReq)
 	}
 
-	_, errRes := client.Do(req)
+	resP, errRes := client.Do(req)
 
 	if errRes != nil {
 		//sdfsdf
 	}
-
-	return "sdfsdf"
+	resP.
+	return `1`
 }
+*/

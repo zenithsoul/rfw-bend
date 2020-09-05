@@ -1,11 +1,14 @@
 package main
 
 import (
-	"rfw-bend/firewall"
+	"fmt"
+	firewall "fwapi"
 )
 
 func main() {
 	firewall.InitPalo()
 
-	c := firewall.GetZonePalo()
+	c, _ := firewall.GetZonePalo()
+
+	fmt.Println(c)
 }
