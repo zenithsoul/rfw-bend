@@ -3,7 +3,6 @@ package firewall
 import (
 	"crypto/tls"
 	"fmt"
-	"log"
 	"net/http"
 )
 
@@ -31,8 +30,8 @@ const (
 	PaloVersion = "9.1"
 )
 
-// Init - init config
-func (s *SetttingCofnig) Init() {
+// InitPalo - init config
+func (s *SetttingCofnig) InitPalo() {
 	s.IP = PaloIPmgm
 	s.Loc = PaloLocation
 	s.Vsys = PaloVsys
@@ -40,8 +39,8 @@ func (s *SetttingCofnig) Init() {
 	s.Version = PaloVersion
 }
 
-// GetZone - Get zone security from Palo Alto
-func (s *SetttingCofnig) GetZone() string {
+// GetZonePalo - Get zone security from Palo Alto
+func (s *SetttingCofnig) GetZonePalo() string {
 
 	var PathURL string = `https://` + s.IP + `/restapi/` + s.Version + `/Network/Zones?location=` + s.Loc + `&vsys=` + s.Vsys
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
@@ -54,13 +53,11 @@ func (s *SetttingCofnig) GetZone() string {
 		fmt.Println(errReq)
 	}
 
-	res, errRes := client.Do(req)
+	_, errRes := client.Do(req)
 
 	if errRes != nil {
-		fmt.Println(errRes)
+		//sdfsdf
 	}
 
-	log.Println(res)
-
-	return ""
+	return "sdfsdf"
 }
