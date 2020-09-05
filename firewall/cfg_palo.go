@@ -6,8 +6,8 @@ import (
 	"net/http"
 )
 
+// SetttingCofnig -
 type (
-	// SetttingCofnig -
 	SetttingCofnig struct {
 		IP      string
 		Loc     string
@@ -31,12 +31,16 @@ const (
 )
 
 // InitPalo - init config
-func (s *SetttingCofnig) InitPalo() {
-	s.IP = PaloIPmgm
-	s.Loc = PaloLocation
-	s.Vsys = PaloVsys
-	s.Key = PaloKey
-	s.Version = PaloVersion
+func InitPalo() *SetttingCofnig {
+
+	return &SetttingCofnig{
+		IP:      PaloIPmgm,
+		Loc:     PaloLocation,
+		Vsys:    PaloVsys,
+		Key:     PaloKey,
+		Version: PaloVersion,
+	}
+
 }
 
 // GetZonePalo - Get zone security from Palo Alto

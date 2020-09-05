@@ -6,4 +6,6 @@ import (
 
 func main() {
 	firewall.InitPalo()
+
+	c := firewall.GetZonePalo()
 }
