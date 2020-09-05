@@ -1,4 +1,4 @@
-package config
+package firewall
 
 import (
 	"crypto/tls"

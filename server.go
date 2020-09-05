@@ -1,25 +1,6 @@
 package main
 
-// "net/http"
-
-// "github.com/labstack/echo"
-
-// MyDocument -
-/*
-type MyDocument struct {
-	ID         string `json:"_id"`
-	Key        string `json:"_key"`
-	Rev        string `json:"_rev"`
-	ValuePrice int64  `json:"value"`
-}
-*/
-
-import "rfw-bend/firewall"
-
 func main() {
-
-	firewall.Init()
-
 	//data := connectDB.GetTopic()
 	//log.Println(data)
 
