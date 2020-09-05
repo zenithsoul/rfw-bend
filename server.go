@@ -14,7 +14,11 @@ type MyDocument struct {
 }
 */
 
+import "rfw-bend/firewall"
+
 func main() {
+
+	firewall.Init()
 
 	//data := connectDB.GetTopic()
 	//log.Println(data)
