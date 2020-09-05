@@ -14,15 +14,10 @@ type MyDocument struct {
 }
 */
 
-import (
-	"log"
-	connectDB "rfw-bend/model"
-)
-
 func main() {
 
-	data := connectDB.GetTopic()
-	log.Println(data)
+	//data := connectDB.GetTopic()
+	//log.Println(data)
 
 	/*
 		start := time.Now()

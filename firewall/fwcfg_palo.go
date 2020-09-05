@@ -32,15 +32,12 @@ const (
 )
 
 // Init - init config
-func Init() *SetttingCofnig {
-
-	return &SetttingCofnig{
-		IP:      PaloIPmgm,
-		Loc:     PaloLocation,
-		Vsys:    PaloVsys,
-		Key:     PaloKey,
-		Version: PaloVersion,
-	}
+func (s *SetttingCofnig) Init() {
+	s.IP = PaloIPmgm
+	s.Loc = PaloLocation
+	s.Vsys = PaloVsys
+	s.Key = PaloKey
+	s.Version = PaloVersion
 }
 
 // GetZone - Get zone security from Palo Alto
