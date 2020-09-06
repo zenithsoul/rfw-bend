@@ -1,4 +1,4 @@
-package PaloAlto
+package paloaltoget
 
 import (
 	"crypto/tls"
