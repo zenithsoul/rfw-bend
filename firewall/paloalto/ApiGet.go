@@ -1,9 +1,8 @@
 package paloalto
 
 import (
-	"crypto/tls"
-	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
@@ -16,9 +15,6 @@ func GetZonePalo() string {
 	// Fullpath to Palo Alto API
 	var PathURL string = `https://` + s.IP + `/restapi/` + s.Version + `/Network/Zones?location=` + s.Loc + `&vsys=` + s.Vsys
 
-	// Exception SSL
-	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
-
 	// Create Cleint Object fot HTTP
 	client := &http.Client{}
 
@@ -29,13 +25,14 @@ func GetZonePalo() string {
 	req.Header.Set("X-PAN-KEY", s.Key)
 
 	if errReq != nil {
-		fmt.Println(errReq)
+		log.Println(errReq)
 	}
 
 	resP, errRes := client.Do(req)
 
 	if errRes != nil {
-		//sdfsdf
+		//Handle Error Response
+		log.Println(errRes)
 	}
 
 	defer resP.Body.Close()

@@ -1,5 +1,10 @@
 package paloalto
 
+import (
+	"crypto/tls"
+	"net/http"
+)
+
 // SetttingCofnig -
 type SetttingCofnig struct {
 	IP      string
@@ -24,6 +29,9 @@ const (
 
 // InitPalo - init config
 func InitPalo() *SetttingCofnig {
+
+	// Exception SSL
+	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 
 	return &SetttingCofnig{
 		IP:      PaloIPmgm,
