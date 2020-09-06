@@ -1,4 +1,4 @@
-package paloaltoget
+package paloalto
 
 import (
 	"crypto/tls"
@@ -6,41 +6,6 @@ import (
 	"io/ioutil"
 	"net/http"
 )
-
-// SetttingCofnig -
-type SetttingCofnig struct {
-	IP      string
-	Loc     string
-	Vsys    string
-	Key     string
-	Version string
-}
-
-const (
-	// PaloIPmgm - IP Management
-	PaloIPmgm string = "192.168.10.187"
-	// PaloLocation -
-	PaloLocation string = "vsys"
-	// PaloVsys -
-	PaloVsys string = "vsys1"
-	// PaloKey -
-	PaloKey string = "LUFRPT1tdExDSzhTQkdLUmFWUFFiTTBpbnVEeUhFdTQ9QlB4Ny9YZmJLUFZSRVZRazg1MVI2Z1RBTVMzU2hWWnFQL0hrVndwaThlQWZ4c21pS2VvMXZSRjh3Mm9OQ1NvOQ=="
-	// PaloVersion -
-	PaloVersion string = "v9.1"
-)
-
-// InitPalo - init config
-func InitPalo() *SetttingCofnig {
-
-	return &SetttingCofnig{
-		IP:      PaloIPmgm,
-		Loc:     PaloLocation,
-		Vsys:    PaloVsys,
-		Key:     PaloKey,
-		Version: PaloVersion,
-	}
-
-}
 
 // GetZonePalo - Get zone security from Palo Alto
 func GetZonePalo() string {
@@ -57,7 +22,7 @@ func GetZonePalo() string {
 	// Create Cleint Object fot HTTP
 	client := &http.Client{}
 
-	// Create Request Object for Client
+	// Create Request to API Server
 	req, errReq := http.NewRequest("GET", PathURL, nil)
 
 	// Set Header Authentication to API
