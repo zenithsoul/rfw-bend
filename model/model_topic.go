@@ -10,27 +10,21 @@ import (
 )
 
 // Topic -
-type (
-	Topic struct {
-		TopicContent string  `json:"topic"`
-		Replys       []Reply `json:"replys"`
-	}
-)
+type Topic struct {
+	TopicContent string  `json:"topic"`
+	Replys       []Reply `json:"replys"`
+}
 
 // Reply -
-type (
-	Reply struct {
-		ReplyContent string     `json:"reply"`
-		Subreplys    []Subreply `json:"subreplys"`
-	}
-)
+type Reply struct {
+	ReplyContent string     `json:"reply"`
+	Subreplys    []Subreply `json:"subreplys"`
+}
 
 // Subreply -
-type (
-	Subreply struct {
-		SubreplyContent string `json:"subreply"`
-	}
-)
+type Subreply struct {
+	SubreplyContent string `json:"subreply"`
+}
 
 // GetTopic -
 func GetTopic() string {

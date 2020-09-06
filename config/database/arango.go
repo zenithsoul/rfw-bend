@@ -71,7 +71,22 @@ func ArangoDBConnect() *SettingDB {
 	}
 }
 
-//NewQuery - Query Database
+//NewQuery - Query Database and return a data to Cursor (Interface) , DB status and Error code
+func NewQuery(query string) (ArangoDriver.Cursor, string, uint8) {
+
+	var db SettingDB = *ArangoDBConnect()
+	ctx := ArangoDriver.WithQueryCount(context.Background())
+	dbQuery, errQuery := db.dbSelect.Query(ctx, query, nil)
+
+	if errQuery != nil {
+		db.dbStatus = "Error: Query"
+		db.dbError = 4
+	}
+
+	return dbQuery, db.dbStatus, db.dbError
+}
+
+/*
 func (db *SettingDB) NewQuery(query string) (ArangoDriver.Cursor, string, uint8) {
 
 	ctx := ArangoDriver.WithQueryCount(context.Background())
@@ -84,3 +99,4 @@ func (db *SettingDB) NewQuery(query string) (ArangoDriver.Cursor, string, uint8)
 
 	return dbQuery, db.dbStatus, db.dbError
 }
+*/

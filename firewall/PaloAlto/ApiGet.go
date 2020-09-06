@@ -1,4 +1,11 @@
-package firewall
+package PaloAlto
+
+import (
+	"crypto/tls"
+	"fmt"
+	"io/ioutil"
+	"net/http"
+)
 
 // SetttingCofnig -
 type SetttingCofnig struct {
@@ -19,7 +26,7 @@ const (
 	// PaloKey -
 	PaloKey string = "LUFRPT1tdExDSzhTQkdLUmFWUFFiTTBpbnVEeUhFdTQ9QlB4Ny9YZmJLUFZSRVZRazg1MVI2Z1RBTVMzU2hWWnFQL0hrVndwaThlQWZ4c21pS2VvMXZSRjh3Mm9OQ1NvOQ=="
 	// PaloVersion -
-	PaloVersion string = "9.1"
+	PaloVersion string = "v9.1"
 )
 
 // InitPalo - init config
@@ -36,20 +43,25 @@ func InitPalo() *SetttingCofnig {
 }
 
 // GetZonePalo - Get zone security from Palo Alto
-func (s *SetttingCofnig) GetZonePalo() (string, error) {
-
-	return `1`, nil
-}
-
-/*
 func GetZonePalo() string {
 
-	var PathURL string = `https://` + PaloIPmgm + `/restapi/` + PaloVersion + `/Network/Zones?location=` + PaloLocation + `&vsys=` + PaloVsys
+	// Init value for connect API
+	var s SetttingCofnig = *InitPalo()
+
+	// Fullpath to Palo Alto API
+	var PathURL string = `https://` + s.IP + `/restapi/` + s.Version + `/Network/Zones?location=` + s.Loc + `&vsys=` + s.Vsys
+
+	// Exception SSL
 	http.DefaultTransport.(*http.Transport).TLSClientConfig = &tls.Config{InsecureSkipVerify: true}
 
+	// Create Cleint Object fot HTTP
 	client := &http.Client{}
+
+	// Create Request Object for Client
 	req, errReq := http.NewRequest("GET", PathURL, nil)
-	req.Header.Set("X-PAN-KEY", PaloKey)
+
+	// Set Header Authentication to API
+	req.Header.Set("X-PAN-KEY", s.Key)
 
 	if errReq != nil {
 		fmt.Println(errReq)
@@ -60,7 +72,9 @@ func GetZonePalo() string {
 	if errRes != nil {
 		//sdfsdf
 	}
-	resP.
-	return `1`
+
+	defer resP.Body.Close()
+	body, _ := ioutil.ReadAll(resP.Body)
+
+	return string(body)
 }
-*/
