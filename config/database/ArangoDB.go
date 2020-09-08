@@ -72,7 +72,9 @@ func ArangoDBConnect() *SettingDB {
 }
 
 //NewQuery - Query Database and return a data to Cursor (Interface) , DB status and Error code
-func (db *SettingDB) NewQuery(query string) (ArangoDriver.Cursor, string, uint8) {
+func NewQuery(query string) (ArangoDriver.Cursor, string, uint8) {
+
+	var db SettingDB = *ArangoDBConnect()
 
 	ctx := ArangoDriver.WithQueryCount(context.Background())
 	dbQuery, errQuery := db.dbSelect.Query(ctx, query, nil)

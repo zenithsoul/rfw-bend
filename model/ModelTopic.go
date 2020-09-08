@@ -29,10 +29,10 @@ type Subreply struct {
 // GetTopic -
 func GetTopic() string {
 
-	conn := dbConn.ArangoDBConnect()
-	defer dbConn.ArangoDBConnect()
+	// conn := dbConn.ArangoDBConnect()
+	//defer dbConn.ArangoDBConnect()
 
-	getCursor, _, _ := conn.NewQuery(`
+	getCursor, _, _ := dbConn.NewQuery(`
 		FOR d IN d_content
 
 			FILTER d.type == "topic"
@@ -55,6 +55,8 @@ func GetTopic() string {
 		
 		RETURN { topic : d.content , replys : d_reply}
 	`)
+	defer getCursor.Close()
+
 	result := []Topic{}
 
 	for {
@@ -72,8 +74,6 @@ func GetTopic() string {
 	}
 
 	jsonResult, _ := json.Marshal(result)
-
-	defer getCursor.Close()
 
 	return string(jsonResult)
 }
