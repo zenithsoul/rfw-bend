@@ -29,9 +29,6 @@ type Subreply struct {
 // GetTopic -
 func GetTopic() string {
 
-	// conn := dbConn.ArangoDBConnect()
-	//defer dbConn.ArangoDBConnect()
-
 	getCursor, _, _ := dbConn.NewQuery(`
 		FOR d IN d_content
 
