@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
-	getModelTopic "rfw-bend/model"
+	getZone "rfw-bend/firewall/paloalto"
 )
 
 func main() {
 
-	fmt.Println(getModelTopic.GetTopic())
+	fmt.Println(getZone.GetZonePalo())
 }

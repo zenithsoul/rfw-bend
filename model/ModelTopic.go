@@ -3,6 +3,7 @@ package model
 import (
 	"context"
 	"encoding/json"
+	"log"
 
 	dbConn "rfw-bend/config/database"
 
@@ -29,14 +30,10 @@ type Subreply struct {
 // GetTopic -
 func GetTopic() string {
 
-	// conn := dbConn.ArangoDBConnect()
-	//defer dbConn.ArangoDBConnect()
-
-	getCursor, _, _ := dbConn.NewQuery(`
+	getCursor, dbStatus, dbErrorCode := dbConn.NewQuery(`
 		FOR d IN d_content
-
 			FILTER d.type == "topic"
-			
+		
 			LET d_reply = 
 			(
 				FOR vector_reply, egde_reply, path_reply IN OUTBOUND d._id e_content
@@ -57,6 +54,10 @@ func GetTopic() string {
 	`)
 	defer getCursor.Close()
 
+	if dbErrorCode != 0 {
+		log.Println(dbStatus)
+	}
+
 	result := []Topic{}
 
 	for {
@@ -65,15 +66,21 @@ func GetTopic() string {
 		_, err := getCursor.ReadDocument(context.Background(), &getData)
 
 		if driver.IsNoMoreDocuments(err) {
+			log.Println(err)
 			break
 		} else if err != nil {
 			// handle other errors
+			log.Println(err)
 		}
 
 		result = append(result, getData)
 	}
 
-	jsonResult, _ := json.Marshal(result)
+	jsonResult, jsonErr := json.Marshal(result)
+
+	if jsonErr != nil {
+		log.Println(jsonErr)
+	}
 
 	return string(jsonResult)
 }

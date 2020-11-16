@@ -36,7 +36,11 @@ func GetZonePalo() string {
 	}
 
 	defer resP.Body.Close()
-	body, _ := ioutil.ReadAll(resP.Body)
+	body, errBodyRes := ioutil.ReadAll(resP.Body)
+
+	if errBodyRes != nil {
+		log.Println(errBodyRes)
+	}
 
 	return string(body)
 }
