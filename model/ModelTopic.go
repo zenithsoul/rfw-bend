@@ -30,7 +30,7 @@ type Subreply struct {
 // GetTopic -
 func GetTopic() string {
 
-	getCursor, dbStatus, dbErrorCode := dbConn.NewQuery(`
+	getCursor, _, _ := dbConn.NewQuery(`
 		FOR d IN d_content
 			FILTER d.type == "topic"
 		
